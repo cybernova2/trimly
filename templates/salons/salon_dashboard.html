@@ -1,0 +1,156 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<section class="page">
+  <div class="page-header">
+    <h2>{{ salon.name }} — Dashboard</h2>
+    <p>Manage your salon, services, and bookings</p>
+  </div>
+
+  <!-- ===== Salon Actions ===== -->
+  <div class="card actions-card">
+    <a href="{% url 'salons:edit_salon' %}" class="btn btn-secondary">
+      ✏️ Edit Salon Details
+    </a>
+    <a href="{% url 'salons:add_service' %}" class="btn btn-primary">
+      ➕ Add Service
+    </a>
+  </div>
+
+  <!-- ===== Services ===== -->
+  <div class="card dashboard-card">
+    <h3 class="card-title">Services</h3>
+
+    {% if services %}
+    <div class="table-wrapper">
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Duration (min)</th>
+            <th>Price (₹)</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          {% for service in services %}
+          <tr>
+            <td>{{ service.service.name }}</td>
+            <td>{{ service.duration_minutes }}</td>
+            <td>₹{{ service.price }}</td>
+            <td class="actions">
+              <a href="{% url 'salons:edit_service' service.id %}" class="action-link">
+                Edit
+              </a>
+              <a
+                href="{% url 'salons:delete_service' service.id %}"
+                class="action-link danger"
+                onclick="return confirm('Delete this service?')"
+              >
+                Delete
+              </a>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    {% else %}
+      <p class="empty-text">No services added yet.</p>
+    {% endif %}
+  </div>
+
+  <!-- ===== Today's Bookings ===== -->
+  <div class="card dashboard-card">
+    <h3 class="card-title">Today’s Bookings</h3>
+
+    {% if todays_bookings %}
+    <div class="table-wrapper">
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Customer</th>
+            <th>Service</th>
+            <th>Time</th>
+            <th>Status</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          {% for booking in todays_bookings %}
+          <tr>
+            <td>{{ booking.user.username }}</td>
+            <td>{{ booking.service.service.name }}</td>
+            <td>{{ booking.time|time:"h:i A" }}</td>
+            <td>
+              <span class="status-badge {{ booking.status }}">
+                {{ booking.status|title }}
+              </span>
+            </td>
+            <td class="actions">
+              {% if booking.status != 'cancelled' %}
+                <a
+                  href="{% url 'bookings:update_status' booking.id 'cancelled' %}"
+                  class="action-link danger"
+                >
+                  Cancel
+                </a>
+              {% else %}
+                <span class="muted">—</span>
+              {% endif %}
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    {% else %}
+      <p class="empty-text">No bookings today.</p>
+    {% endif %}
+  </div>
+
+  <!-- ===== Upcoming Bookings ===== -->
+  <div class="card dashboard-card">
+    <h3 class="card-title">Upcoming Bookings</h3>
+
+    {% if upcoming_bookings %}
+    <div class="table-wrapper">
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Date</th>
+            <th>Customer</th>
+            <th>Service</th>
+            <th>Time</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          {% for booking in upcoming_bookings %}
+          <tr>
+            <td>{{ booking.date|date:"d M Y" }}</td>
+            <td>{{ booking.user.username }}</td>
+            <td>{{ booking.service.service.name }}</td>
+            <td>{{ booking.time|time:"h:i A" }}</td>
+            <td>
+              <span class="status-badge {{ booking.status }}">
+                {{ booking.status|title }}
+              </span>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    {% else %}
+      <p class="empty-text">No upcoming bookings.</p>
+    {% endif %}
+  </div>
+
+</section>
+
+{% endblock %}

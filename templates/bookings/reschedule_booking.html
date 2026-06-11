@@ -1,0 +1,117 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<section class="page">
+  <div class="page-header">
+    <h2>Reschedule Booking</h2>
+    <p>Choose a new date and time for your appointment</p>
+  </div>
+
+  <div class="card reschedule-card">
+    <div class="booking-summary">
+      <p>
+        <strong>Salon:</strong> {{ booking.salon.name }} <br>
+        <strong>Service:</strong> {{ booking.service.name }}
+      </p>
+    </div>
+
+    <form method="post" id="reschedule-form" class="form">
+      {% csrf_token %}
+
+      <div class="form-group">
+        <label for="date">Date</label>
+        <input
+          type="date"
+          name="date"
+          id="date"
+          class="form-control"
+          value="{{ booking.date|date:'Y-m-d' }}"
+          min="{% now 'Y-m-d' %}"
+
+        >
+      </div>
+
+      <div class="form-group">
+        <label for="time">Time</label>
+        <select name="time" id="time" class="form-control">
+          <option value="">Select time</option>
+        </select>
+      </div>
+
+      <div class="form-actions">
+        <button
+          type="submit"
+          id="update-btn"
+          class="btn btn-primary"
+          disabled
+        >
+          Update Booking
+        </button>
+
+        <a
+          href="{% url 'bookings:customer_dashboard' %}"
+          class="btn btn-secondary"
+        >
+          Cancel
+        </a>
+      </div>
+    </form>
+  </div>
+</section>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+const dateEl = document.getElementById('date');
+const timeEl = document.getElementById('time');
+const btn = document.getElementById('update-btn');
+
+const today = new Date().toISOString().split('T')[0];
+dateEl.setAttribute('min', today);
+
+function loadSlots() {
+  const date = dateEl.value;
+  if (!date) return;
+
+  timeEl.innerHTML = '<option>Loading slots...</option>';
+  btn.disabled = true;
+
+  fetch(
+    `/bookings/get-slots/?salon={{ booking.salon.id }}&service={{ booking.service.id }}&date=${date}`
+  )
+  .then(res => res.json())
+  .then(data => {
+    timeEl.innerHTML = '<option value="">Select time</option>';
+
+    if (!data.slots || data.slots.length === 0) {
+      const opt = document.createElement('option');
+      opt.textContent = 'No slots available';
+      opt.disabled = true;
+      timeEl.appendChild(opt);
+      return;
+    }
+
+    data.slots.forEach(slot => {
+      const opt = document.createElement('option');
+      opt.value = slot;
+      opt.textContent = slot;
+      timeEl.appendChild(opt);
+    });
+  })
+  .catch(() => {
+    alert("Failed to load slots");
+  });
+}
+
+dateEl.addEventListener('change', loadSlots);
+
+timeEl.addEventListener('change', () => {
+  btn.disabled = !timeEl.value;
+});
+
+// Auto-load slots on page load
+loadSlots();
+</script>
+{% endblock %}

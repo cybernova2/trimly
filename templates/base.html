@@ -1,0 +1,72 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Trimly</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+  <!-- Main CSS -->
+  <link rel="stylesheet" href="{% static 'css/main.css' %}">
+
+</head>
+
+<body>
+
+<header class="navbar">
+    <div class="navbar-container">
+        <a href="/" class="brand">Trimly</a>
+
+        <nav class="nav-links">
+
+    {% if user.is_authenticated %}
+        <span class="nav-user">
+            Hi, {{ user.username }}
+        </span>
+
+        {% if user.profile.user_type == 'customer' %}
+            <a href="{% url 'bookings:customer_dashboard' %}" class="nav-link">
+                My Bookings
+            </a>
+        {% endif %}
+
+        {% if user.profile.user_type == 'shopkeeper' and user.profile.salon_id %}
+            <a href="{% url 'salon_dashboard' user.profile.salon_id %}" class="nav-link">
+                Dashboard
+            </a>
+        {% endif %}
+
+        <a href="{% url 'accounts:logout' %}" class="nav-link logout">
+            Logout
+        </a>
+
+    {% else %}
+        <a href="{% url 'accounts:login' %}" class="nav-link">
+            Login
+        </a>
+        <a href="{% url 'accounts:register' %}" class="nav-link primary">
+            Sign Up
+        </a>
+    {% endif %}
+
+</nav>
+
+    </div>
+</header>
+
+<main class="main-container">
+    {% block content %}{% endblock %}
+</main>
+
+<footer class="footer">
+    <p>© {{ now|date:"Y" }} Trimly · Trim the wait. Book with Trimly</p>
+</footer>
+
+<script src="https://unpkg.com/htmx.org@1.9.10"></script>
+{% block extra_js %}{% endblock %}
+
+</body>
+</html>

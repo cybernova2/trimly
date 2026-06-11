@@ -1,0 +1,100 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+{% if user.is_authenticated and user.profile.user_type == 'shopkeeper' %}
+
+  <!-- SHOPKEEPER HOME -->
+  <section class="hero">
+    <div class="hero-content">
+      <h1 class="hero-title">Welcome back 👋</h1>
+      <p class="hero-subtitle">
+        Manage your salon, services, and bookings.
+      </p>
+
+      {% if salon %}
+        <a href="{% url 'salon_dashboard' salon.id %}" class="btn btn-primary">
+          Go to Dashboard
+        </a>
+      {% else %}
+      <p class="muted">
+  You are logged in as <strong>{{ user.username }}</strong>.
+</p>
+<p class="muted">
+  This account does not own a salon yet.
+</p>
+
+        <p class="muted">Your salon is not set up yet.</p>
+         <a href="{% url 'salons:create_salon' %}" class="btn btn-primary">
+          Set up your salon
+        </a>
+      {% endif %}
+    </div>
+  </section>
+
+{% elif user.is_authenticated and user.profile.user_type == 'customer' %}
+
+  <!-- CUSTOMER HOME -->
+  <section class="hero">
+    <div class="hero-content">
+      <h1 class="hero-title">Trim the wait.</h1>
+      <p class="hero-subtitle">
+        Book salon appointments instantly. No queues. No chaos.
+      </p>
+
+      <div class="hero-actions">
+        <a href="/salons/" class="btn btn-primary">
+          Book a Slot
+        </a>
+
+        <a href="{% url 'bookings:customer_dashboard' %}" class="btn btn-secondary">
+          My Bookings
+        </a>
+      </div>
+    </div>
+  </section>
+
+
+
+{% else %}
+
+  <!-- GUEST HOME -->
+  <section class="hero">
+    <div class="hero-content">
+      <h1 class="hero-title">Trim the wait.</h1>
+      <p class="hero-subtitle">
+        Book salon appointments instantly. No queues. No chaos.
+      </p>
+
+      <div class="hero-actions">
+        <a href="{% url 'accounts:login' %}?next=/salons/" class="btn btn-primary">
+          Book as Customer
+        </a>
+
+        <a href="{% url 'accounts:login' %}?next=/salon-dashboard/" class="btn btn-secondary">
+          Login as Salon Owner
+        </a>
+      </div>
+    </div>
+  </section>
+
+{% endif %}
+
+  <section class="features">
+    <div class="feature-card">
+      <h3>⏱ Save Time</h3>
+      <p>No more waiting in queues.</p>
+    </div>
+
+    <div class="feature-card">
+      <h3>💇 Choose Services</h3>
+      <p>Pick services that suit your needs.</p>
+    </div>
+
+    <div class="feature-card">
+      <h3>📅 Smart Scheduling</h3>
+      <p>Book when it fits your schedule.</p>
+    </div>
+  </section>
+
+{% endblock %}

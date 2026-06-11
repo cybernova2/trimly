@@ -1,0 +1,201 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<section class="page">
+  <div class="page-header">
+    <h2>Book Your Salon Slot</h2>
+    <p>Select salon, service, date and time</p>
+  </div>
+
+  <div class="card booking-card">
+    <form method="post" id="booking-form" class="form">
+      {% csrf_token %}
+
+      <div class="form-group">
+        <label for="salon">Salon</label>
+        <select name="salon" id="salon" class="form-control">
+          <option value="">Select salon</option>
+          {% for salon in form.fields.salon.queryset %}
+            <option
+    value="{{ salon.id }}"
+    {% if form.initial.salon|stringformat:"s" == salon.id|stringformat:"s" %}
+        selected
+    {% endif %}
+>
+    {{ salon.name }}
+</option>
+          {% endfor %}
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="service">Service</label>
+        <select name="service" id="service" class="form-control">
+          <option value="">Select service</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="date">Date</label>
+        <input type="date" name="date" id="date" class="form-control" value="{{ form.initial.date }}">
+      </div>
+
+      <div class="form-group">
+        <label for="time">Time</label>
+        <select name="time" id="time" class="form-control">
+          <option value="">Select time</option>
+        </select>
+      </div>
+
+      <div class="form-actions">
+        <button type="submit" id="book-btn" class="btn btn-primary" disabled>
+          Book Appointment
+        </button>
+      </div>
+    </form>
+  </div>
+</section>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+/* ---------- DATE: disable past ---------- */
+const today = new Date().toISOString().split('T')[0];
+document.getElementById('date').setAttribute('min', today);
+
+/* ---------- SLOT LOADING ---------- */
+const salonEl = document.getElementById('salon');
+const serviceEl = document.getElementById('service');
+const dateEl = document.getElementById('date');
+const timeEl = document.getElementById('time');
+const bookBtn = document.getElementById('book-btn');
+
+function loadSlots() {
+  const salon = salonEl.value;
+  const service = serviceEl.value;
+  const date = dateEl.value;
+
+  bookBtn.disabled = true;
+  timeEl.innerHTML = '<option value="">Select time</option>';
+
+  if (!salon || !service || !date) return;
+
+  timeEl.innerHTML = '<option value="">Loading slots...</option>';
+
+  fetch(`/bookings/get-slots/?salon=${salon}&service=${service}&date=${date}`)
+    .then(res => res.json())
+    .then(data => {
+      timeEl.innerHTML = '<option value="">Select time</option>';
+
+      if (data.slots.length === 0) {
+        alert("No available slots for this date");
+        return;
+      }
+
+      data.slots.forEach(slot => {
+        const opt = document.createElement('option');
+        opt.value = slot;
+        opt.textContent = slot;
+        timeEl.appendChild(opt);
+      });
+    })
+    .catch(() => {
+      alert("Failed to load slots");
+    });
+}
+
+/* ---------- EVENTS ---------- */
+salonEl.addEventListener('change', () => {
+  loadServices();
+  loadSlots();
+});
+
+serviceEl.addEventListener('change', loadSlots);
+dateEl.addEventListener('change', loadSlots);
+
+timeEl.addEventListener('change', () => {
+  bookBtn.disabled = !timeEl.value;
+});
+
+/* ---------- FINAL SUBMIT GUARD ---------- */
+document.getElementById('booking-form').addEventListener('submit', function (e) {
+  if (!salonEl.value || !serviceEl.value || !dateEl.value || !timeEl.value) {
+    e.preventDefault();
+    alert("Please complete all fields before booking.");
+  }
+});
+
+/* ---------- SERVICE LOADING ---------- */
+function loadServices() {
+  const salon = salonEl.value;
+  serviceEl.innerHTML = '<option value="">Select service</option>';
+  timeEl.innerHTML = '<option value="">Select time</option>';
+  bookBtn.disabled = true;
+
+  if (!salon) return;
+
+  fetch(`/salons/get-services/?salon=${salon}`)
+    .then(res => res.json())
+    .then(data => {
+      if (data.services.length === 0) {
+        alert("No services available for this salon");
+        return;
+      }
+
+      data.services.forEach(service => {
+        const opt = document.createElement('option');
+        opt.value = service.id;
+        opt.textContent = service.name;
+        serviceEl.appendChild(opt);
+      });
+    });
+}
+</script>
+
+<script>
+function getParam(name) {
+  return new URLSearchParams(window.location.search).get(name);
+}
+
+const presetSalon = getParam("salon");
+const presetService = getParam("service");
+const presetDate = getParam("date");
+
+if (presetSalon) {
+  const salonSelect = document.getElementById("salon");
+  salonSelect.value = presetSalon;
+  salonSelect.dispatchEvent(new Event("change"));
+}
+
+if (presetDate) {
+  document.getElementById("date").value = presetDate;
+}
+
+if (presetService) {
+  // wait until services load
+  const waitForServices = setInterval(() => {
+    const serviceSelect = document.getElementById("service");
+    if (serviceSelect.options.length > 1) {
+      serviceSelect.value = presetService;
+      serviceSelect.dispatchEvent(new Event("change"));
+      clearInterval(waitForServices);
+    }
+  }, 200);
+}
+</script>
+
+
+<script>
+const presetTime = "{{ request.GET.time }}";
+if (presetTime) {
+  const opt = document.createElement("option");
+  opt.value = presetTime;
+  opt.textContent = presetTime;
+  opt.selected = true;
+  document.getElementById("time").appendChild(opt);
+}
+</script>
+
+{% endblock %}

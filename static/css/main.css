@@ -1,0 +1,525 @@
+/* ===============================
+   🌍 BASE STYLES
+================================ */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  font-family: 'Inter', 'Montserrat', sans-serif;
+  background-color: #F7F7F7;
+  color: #222222;
+}
+
+body {
+  -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3, h4 {
+  font-family: 'Playfair Display', 'Poppins', serif;
+}
+
+/* ===============================
+   🧱 GLOBAL LAYOUT
+================================ */
+.navbar {
+  background: #ffffff;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+  position: sticky;
+  top: 0;
+  z-index: 50;
+}
+
+.navbar-container {
+  max-width: 1200px;
+  margin: auto;
+  padding: 16px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.brand {
+  font-size: 1.5rem;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  color: #222222;
+  text-decoration: none;
+}
+
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+}
+
+.nav-link {
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: #666666;
+  text-decoration: none;
+  transition: color 0.25s ease;
+}
+
+.nav-link:hover {
+  color: #C9A24D;
+}
+
+.nav-link.primary {
+  color: #C9A24D;
+  font-weight: 600;
+}
+
+.nav-user {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.logout {
+  color: #E53935;
+}
+
+.main-container {
+  max-width: 1200px;
+  margin: auto;
+  padding: 40px 24px;
+}
+
+.footer {
+  background: #ffffff;
+  border-top: 1px solid #eaeaea;
+  text-align: center;
+  font-size: 0.85rem;
+  color: #777777;
+  padding: 24px;
+}
+
+/* ===============================
+   📄 PAGE + CARD SYSTEM
+================================ */
+.page {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+
+.page-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.page-header.center {
+  justify-content: center;
+  text-align: center;
+}
+
+.card {
+  background: #ffffff;
+  border-radius: 18px;
+  padding: 24px;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.06);
+  transition: box-shadow 0.3s ease, transform 0.3s ease;
+}
+
+.card:hover {
+  box-shadow: 0 14px 30px rgba(0,0,0,0.1);
+  transform: translateY(-3px);
+}
+
+/* ===============================
+   🎯 BUTTONS
+================================ */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 22px;
+  border-radius: 14px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  border: none;
+  transition: all 0.25s ease;
+}
+
+.btn-primary {
+  background: #C9A24D;
+  color: #ffffff;
+}
+
+.btn-primary:hover {
+  background: #b8923f;
+}
+
+.btn-secondary {
+  background: #f1f1f1;
+  color: #555555;
+}
+
+.btn-secondary:hover {
+  background: #e5e5e5;
+}
+
+.btn-danger {
+  background: #E53935;
+  color: #ffffff;
+}
+
+.btn-danger:hover {
+  background: #c62828;
+}
+
+.full-width {
+  width: 100%;
+}
+
+/* ===============================
+   📝 FORMS
+================================ */
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.form-card {
+  max-width: 520px;
+  margin: auto;
+}
+.form-group label {
+  font-size: 0.85rem;
+  color: #666;
+  margin-bottom: 4px;
+}
+
+.auth-form {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.form-control {
+  padding: 12px 14px;
+  border-radius: 14px;
+  border: 1px solid #cccccc;
+  font-size: 0.9rem;
+  transition: border-color 0.25s ease, box-shadow 0.25s ease;
+}
+
+.form-control:focus {
+  outline: none;
+  border-color: #E8B4B8;
+  box-shadow: 0 0 0 3px rgba(232,180,184,0.25);
+}
+
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+}
+
+/* ===============================
+   🔐 AUTH PAGES
+================================ */
+.auth-page {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.auth-card {
+  width: 100%;
+  max-width: 420px;
+}
+
+.auth-footer {
+  text-align: center;
+  font-size: 0.85rem;
+  color: #777777;
+}
+
+/* ===============================
+   🏠 HERO / LANDING
+================================ */
+.hero {
+  background: linear-gradient(
+      rgba(255,255,255,0.9),
+      rgba(255,255,255,0.9)
+    ),
+    url("/static/images/hero-salon.jpg");
+  background-size: cover;
+  background-position: center;
+  border-radius: 26px;
+  padding: 60px;
+}
+
+.hero-content {
+  max-width: 520px;
+}
+
+.hero-title {
+  font-size: 2.5rem;
+  font-weight: 700;
+}
+
+.hero-subtitle {
+  margin-top: 12px;
+  color: #666666;
+}
+
+.hero-actions {
+  margin-top: 28px;
+  display: flex;
+  gap: 16px;
+}
+
+.features {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 24px;
+}
+
+.feature-card {
+  text-align: center;
+}
+
+/* ===============================
+   💇 SALON LIST
+================================ */
+.salon-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 24px;
+}
+
+.salon-card {
+  overflow: hidden;
+}
+
+.salon-card img {
+  width: 100%;
+  height: 180px;
+  object-fit: cover;
+  border-radius: 14px;
+  margin-bottom: 12px;
+}
+
+.salon-name {
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
+.salon-address {
+  font-size: 0.85rem;
+  color: #777777;
+}
+
+.salon-actions {
+  margin-top: 16px;
+  display: flex;
+  justify-content: space-between;
+}
+
+/* ===============================
+   📅 BOOKING + CALENDAR
+================================ */
+.booking-card {
+  max-width: 760px;
+  margin: auto;
+}
+
+.calendar {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 8px;
+  font-size: 0.85rem;
+}
+
+.calendar-day {
+  height: 40px;
+  width: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: background 0.25s ease;
+}
+
+.calendar-day:hover {
+  background: #f1f1f1;
+}
+
+.calendar-day.active {
+  background: #C9A24D;
+  color: white;
+}
+
+.calendar-day.disabled {
+  color: #cccccc;
+  cursor: not-allowed;
+}
+
+.time-slot {
+  padding: 10px 14px;
+  border-radius: 14px;
+  border: 1px solid #dddddd;
+  cursor: pointer;
+}
+
+.time-slot:hover {
+  border-color: #C9A24D;
+}
+
+.time-slot.active {
+  background: #E8B4B8;
+  color: white;
+  border-color: transparent;
+}
+
+/* ===============================
+   🎉 CONFIRMATION
+================================ */
+.confirmation-card {
+  max-width: 480px;
+  margin: auto;
+  text-align: center;
+}
+
+.confirmation-icon {
+  font-size: 3rem;
+  color: #C9A24D;
+}
+
+.confirmation-details {
+  margin-top: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.detail-row {
+  display: flex;
+  justify-content: space-between;
+}
+
+.detail-label {
+  color: #777777;
+}
+
+.detail-value {
+  font-weight: 500;
+}
+
+/* ===============================
+   👤 DASHBOARDS
+================================ */
+.dashboard-card {
+  margin-bottom: 24px;
+}
+
+.table-wrapper {
+  overflow-x: auto;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.bookings-table th {
+  text-align: left;
+  padding-bottom: 12px;
+  color: #777777;
+}
+
+.status-badge {
+  padding: 4px 12px;
+  border-radius: 999px;
+  font-size: 0.75rem;
+}
+
+.status-badge.confirmed {
+  background: #E8F5E9;
+  color: #2E7D32;
+}
+
+.status-badge.pending {
+  background: #FFF8E1;
+  color: #F9A825;
+}
+
+.status-badge.cancelled {
+  background: #FDECEA;
+  color: #C62828;
+}
+
+.actions {
+  display: flex;
+  gap: 12px;
+}
+
+.action-link {
+  color: #C9A24D;
+  font-size: 0.85rem;
+  text-decoration: none;
+}
+
+.action-link.danger {
+  color: #E53935;
+}
+
+
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.table th {
+  text-align: left;
+  font-size: 0.85rem;
+  color: #777;
+  padding-bottom: 12px;
+}
+
+.table td {
+  padding: 12px 0;
+  border-top: 1px solid #eee;
+}
+
+.table tr:hover {
+  background: #fafafa;
+}
+
+
+
+
+
+
+
+
+
+
+
+/* ===============================
+   ✨ MICRO ANIMATIONS
+================================ */
+.hover-lift {
+  transition: transform 0.25s ease;
+}
+
+.hover-lift:hover {
+  transform: translateY(-4px);
+}

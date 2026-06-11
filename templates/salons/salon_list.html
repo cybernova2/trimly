@@ -1,0 +1,111 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<section class="page">
+  <div class="page-header">
+    <h2>Available Salons</h2>
+    <p>Select a salon to book your appointment</p>
+  </div>
+
+  <div class="card calendar-card">
+    <div class="calendar-row">
+
+      <div class="form-group">
+        <label>Select Date</label>
+        <input type="date" id="filter-date" class="form-control" min="{{ today|date:'Y-m-d' }}">
+      </div>
+
+      <div class="form-group">
+        <label for="filter-service">Select Service</label>
+        <select id="filter-service" class="form-control">
+          <option value="">Select service</option>
+          {% for service in services %}
+            <option value="{{ service.id }}">{{ service.name }}</option>
+          {% endfor %}
+        </select>
+      </div>
+
+    </div>
+
+    <div class="form-actions">
+      <button type="button" class="btn btn-primary" onclick="loadFilteredSalons()">
+        Show Available Salons
+      </button>
+    </div>
+  </div>
+
+  <div class="salon-grid" id="salon-list">
+    {% for salon in salons %}
+      <div class="card salon-card">
+        <h3 class="salon-name">{{ salon.name }}</h3>
+        <p class="salon-address">{{ salon.address }}</p>
+
+        <div class="salon-actions">
+          {% if user.is_authenticated and user.profile.user_type == 'customer' %}
+            <a href="/bookings/book?salon={{ salon.id }}" class="btn btn-primary">
+              Book Now
+            </a>
+          {% elif user.is_authenticated and user.profile.user_type == 'shopkeeper' %}
+            <span class="muted">Shop owner view</span>
+          {% else %}
+            <a href="{% url 'accounts:login' %}" class="btn btn-primary">
+              Login to Book
+            </a>
+          {% endif %}
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+
+</section>
+
+<script>
+const dateInput = document.getElementById("filter-date");
+const serviceInput = document.getElementById("filter-service");
+const salonList = document.getElementById("salon-list");
+
+// dateInput.addEventListener("change", loadFilteredSalons);
+// serviceInput.addEventListener("change", loadFilteredSalons);
+
+function loadFilteredSalons() {
+  console.log("button clicked");
+
+  const date = dateInput.value;
+  const service = serviceInput.value;
+
+  if (!date || !service) {
+    alert("Please select date and service");
+    return;
+  }
+
+  const url = `/salons/available/?date=${date}&service=${service}`;
+
+  fetch(url)
+    .then(res => res.json())
+    .then(data => {
+      salonList.innerHTML = "";
+
+      if (data.salons.length === 0) {
+        salonList.innerHTML = "<p>No salons available.</p>";
+        return;
+      }
+
+      data.salons.forEach(salon => {
+        salonList.innerHTML += `
+          <div class="card salon-card">
+            <h3 class="salon-name">${salon.name}</h3>
+            <p class="salon-address">${salon.address}</p>
+
+            <a href="/bookings/book/?salon=${salon.id}&date=${date}&service=${salon.salon_service_id}"
+               class="btn btn-primary">
+              Book Now
+            </a>
+          </div>
+        `;
+      });
+    });
+}
+</script>
+
+{% endblock %}

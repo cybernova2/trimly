@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<section class="page auth-page">
+  <div class="card auth-card">
+    <div class="page-header center">
+      <h2>Welcome Back</h2>
+      <p>Login to continue booking with Trimly</p>
+    </div>
+
+    <form method="post" class="form auth-form">
+      {% csrf_token %}
+
+      {{ form.as_p }}
+
+      <div class="form-actions">
+        <button type="submit" class="btn btn-primary full-width">
+          Login
+        </button>
+      </div>
+    </form>
+
+    <div class="auth-footer">
+      <p>
+        Don’t have an account?
+        <a href="{% url 'accounts:register' %}">Sign up</a>
+      </p>
+    </div>
+  </div>
+</section>
+
+{% endblock %}

@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<section class="page">
+  <div class="card confirmation-card">
+
+    <div class="confirmation-header">
+      <div class="confirmation-icon">🎉</div>
+      <h2>Booking Confirmed</h2>
+      <p>Your appointment has been successfully booked.</p>
+    </div>
+
+    <div class="confirmation-details">
+      <div class="detail-row">
+        <span class="detail-label">Salon</span>
+        <span class="detail-value">{{ booking.salon.name }}</span>
+      </div>
+
+      <div class="detail-row">
+        <span class="detail-label">Service</span>
+        <span class="detail-value">{{ booking.service.service.name }}</span>
+      </div>
+
+      <div class="detail-row">
+        <span class="detail-label">Date</span>
+        <span class="detail-value">{{ booking.date }}</span>
+      </div>
+
+      <div class="detail-row">
+        <span class="detail-label">Time</span>
+        <span class="detail-value">{{ booking.time }}</span>
+      </div>
+
+      <div class="detail-row">
+        <span class="detail-label">Status</span>
+        <span class="detail-value status {{ booking.status }}">
+          {{ booking.status|title }}
+        </span>
+      </div>
+    </div>
+
+    <div class="confirmation-actions">
+      <a href="{% url 'bookings:customer_dashboard' %}" class="btn btn-primary">
+        Go to My Bookings
+      </a>
+    </div>
+
+  </div>
+</section>
+
+{% endblock %}
