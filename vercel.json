@@ -1,0 +1,14 @@
+{
+  "builds": [
+    {
+      "src": "trimly_core/wsgi.py",
+      "use": "@vercel/python"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/(.*)",
+      "dest": "trimly_core/wsgi.py"
+    }
+  ]
+}
